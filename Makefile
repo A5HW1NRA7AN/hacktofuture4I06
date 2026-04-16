@@ -1,4 +1,4 @@
-.PHONY: help setup install backend agent jira hubspot frontend docker-up docker-down lint format fl test clean migrate makemigrations shell superuser celery-worker celery-beat test-backend test-agent test-cov
+.PHONY: help setup install backend agent jira hubspot frontend docker-up docker-down lint format fl type-check test clean migrate makemigrations shell superuser celery-worker celery-beat test-backend test-agent test-cov
 
 # ── Tooling paths ─────────────────────────────────────────────────────────────
 UV            := $(shell command -v uv 2> /dev/null || echo $(CURDIR)/.venv/bin/uv)
@@ -120,6 +120,11 @@ lint:
 	cd backend && $(FLAKE8) .
 	cd agent-service && $(FLAKE8) .
 	@echo "Linting complete!"
+
+type-check:
+	@echo "Running mypy (strict) on agent-service..."
+	cd agent-service && $(PYTHON) -m mypy src/ --config-file mypy.ini
+	@echo "Type check complete!"
 
 format:
 	@echo "Formatting Python code with Black..."
