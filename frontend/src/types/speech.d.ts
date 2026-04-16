@@ -36,12 +36,13 @@ interface SpeechRecognitionErrorEvent extends Event {
   message: string;
 }
 
-declare var SpeechRecognition: {
-  new (): SpeechRecognition;
-  prototype: SpeechRecognition;
-};
-
 interface Window {
-  SpeechRecognition: typeof SpeechRecognition;
-  webkitSpeechRecognition: typeof SpeechRecognition;
+  SpeechRecognition: {
+    new (): SpeechRecognition;
+    prototype: SpeechRecognition;
+  };
+  webkitSpeechRecognition: {
+    new (): SpeechRecognition;
+    prototype: SpeechRecognition;
+  };
 }

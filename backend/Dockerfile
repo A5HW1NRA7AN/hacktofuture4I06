@@ -34,7 +34,7 @@ WORKDIR /app
 
 # Runtime system deps only
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq5 \
+    postgresql-client \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -49,7 +49,7 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser && \
+RUN groupadd -r appuser && useradd -r -m -g appuser appuser && \
     chown -R appuser:appuser /app && \
     chown appuser:appuser /entrypoint.sh
 
