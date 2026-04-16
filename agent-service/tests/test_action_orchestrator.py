@@ -96,7 +96,7 @@ async def test_orchestrator_returns_action_result_on_success():
     mock_chain = MagicMock()
     mock_chain.ainvoke = AsyncMock(return_value=mock_plan)
 
-    with patch("src.agents.action_orchestrator.ChatOpenAI") as MockLLM:
+    with patch("src.agents.action_orchestrator.ChatOpenAI") as _MockLLM:  # noqa: F841
         with patch("src.agents.action_orchestrator.ChatPromptTemplate") as MockPrompt:
             MockPrompt.from_messages.return_value.__or__ = MagicMock(
                 return_value=mock_chain
@@ -120,7 +120,7 @@ async def test_orchestrator_handles_llm_failure_gracefully():
     mock_chain = MagicMock()
     mock_chain.ainvoke = AsyncMock(side_effect=Exception("LLM timeout"))
 
-    with patch("src.agents.action_orchestrator.ChatOpenAI") as MockLLM:
+    with patch("src.agents.action_orchestrator.ChatOpenAI") as _MockLLM:  # noqa: F841
         with patch("src.agents.action_orchestrator.ChatPromptTemplate") as MockPrompt:
             MockPrompt.from_messages.return_value.__or__ = MagicMock(
                 return_value=mock_chain
@@ -150,7 +150,7 @@ async def test_orchestrator_handles_empty_actions():
     mock_chain = MagicMock()
     mock_chain.ainvoke = AsyncMock(return_value=mock_plan)
 
-    with patch("src.agents.action_orchestrator.ChatOpenAI") as MockLLM:
+    with patch("src.agents.action_orchestrator.ChatOpenAI") as _MockLLM:  # noqa: F841
         with patch("src.agents.action_orchestrator.ChatPromptTemplate") as MockPrompt:
             MockPrompt.from_messages.return_value.__or__ = MagicMock(
                 return_value=mock_chain
