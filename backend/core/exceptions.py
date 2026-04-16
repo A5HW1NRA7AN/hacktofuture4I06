@@ -45,9 +45,11 @@ def custom_exception_handler(exc, context):
             "Unhandled server error",
             extra={
                 "view": str(context.get("view")),
-                "request_path": context.get("request", {}).path
-                if hasattr(context.get("request"), "path")
-                else "",
+                "request_path": (
+                    context.get("request", {}).path
+                    if hasattr(context.get("request"), "path")
+                    else ""
+                ),
             },
         )
         return Response(

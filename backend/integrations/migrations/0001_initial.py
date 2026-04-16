@@ -11,64 +11,170 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('accounts', '0001_initial'),
+        ("accounts", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Integration',
+            name="Integration",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('provider', models.CharField(choices=[('jira', 'Jira'), ('slack', 'Slack'), ('linear', 'Linear'), ('hubspot', 'HubSpot'), ('github', 'GitHub')], max_length=50)),
-                ('name', models.CharField(help_text="User-visible label, e.g. 'Acme Jira Prod'", max_length=255)),
-                ('config', models.JSONField(default=dict, help_text='JSONB: base_url, workspace_id, project_keys, etc.')),
-                ('is_active', models.BooleanField(default=True)),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_integrations', to=settings.AUTH_USER_MODEL)),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='integrations', to='accounts.organization')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "provider",
+                    models.CharField(
+                        choices=[
+                            ("jira", "Jira"),
+                            ("slack", "Slack"),
+                            ("linear", "Linear"),
+                            ("hubspot", "HubSpot"),
+                            ("github", "GitHub"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="User-visible label, e.g. 'Acme Jira Prod'",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "config",
+                    models.JSONField(
+                        default=dict,
+                        help_text="JSONB: base_url, workspace_id, project_keys, etc.",
+                    ),
+                ),
+                ("is_active", models.BooleanField(default=True)),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="created_integrations",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="integrations",
+                        to="accounts.organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Integration',
-                'verbose_name_plural': 'Integrations',
+                "verbose_name": "Integration",
+                "verbose_name_plural": "Integrations",
             },
         ),
         migrations.CreateModel(
-            name='IntegrationAccount',
+            name="IntegrationAccount",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('external_account_id', models.CharField(help_text="Provider's account/workspace identifier", max_length=255)),
-                ('display_name', models.CharField(blank=True, max_length=255)),
-                ('credentials', models.JSONField(default=dict, help_text='JSONB: OAuth tokens, API keys (encrypt in prod). Write-only on API.')),
-                ('scopes', models.JSONField(default=list, help_text='JSONB list of OAuth scopes granted')),
-                ('token_expires_at', models.DateTimeField(blank=True, null=True)),
-                ('is_active', models.BooleanField(default=True)),
-                ('last_synced_at', models.DateTimeField(blank=True, null=True)),
-                ('integration', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='accounts', to='integrations.integration')),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='integration_accounts', to='accounts.organization')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "external_account_id",
+                    models.CharField(
+                        help_text="Provider's account/workspace identifier",
+                        max_length=255,
+                    ),
+                ),
+                ("display_name", models.CharField(blank=True, max_length=255)),
+                (
+                    "credentials",
+                    models.JSONField(
+                        default=dict,
+                        help_text="JSONB: OAuth tokens, API keys (encrypt in prod). Write-only on API.",
+                    ),
+                ),
+                (
+                    "scopes",
+                    models.JSONField(
+                        default=list, help_text="JSONB list of OAuth scopes granted"
+                    ),
+                ),
+                ("token_expires_at", models.DateTimeField(blank=True, null=True)),
+                ("is_active", models.BooleanField(default=True)),
+                ("last_synced_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "integration",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="accounts",
+                        to="integrations.integration",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="integration_accounts",
+                        to="accounts.organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Integration Account',
-                'verbose_name_plural': 'Integration Accounts',
-                'indexes': [models.Index(fields=['organization', 'integration'], name='intaccount_org_integration_idx'), models.Index(fields=['integration', 'is_active'], name='intaccount_int_active_idx')],
+                "verbose_name": "Integration Account",
+                "verbose_name_plural": "Integration Accounts",
+                "indexes": [
+                    models.Index(
+                        fields=["organization", "integration"],
+                        name="intaccount_org_integration_idx",
+                    ),
+                    models.Index(
+                        fields=["integration", "is_active"],
+                        name="intaccount_int_active_idx",
+                    ),
+                ],
             },
         ),
         migrations.AddConstraint(
-            model_name='integrationaccount',
-            constraint=models.UniqueConstraint(fields=('integration', 'external_account_id'), name='unique_integration_account'),
+            model_name="integrationaccount",
+            constraint=models.UniqueConstraint(
+                fields=("integration", "external_account_id"),
+                name="unique_integration_account",
+            ),
         ),
         migrations.AddIndex(
-            model_name='integration',
-            index=models.Index(fields=['organization', 'provider'], name='integration_org_provider_idx'),
+            model_name="integration",
+            index=models.Index(
+                fields=["organization", "provider"], name="integration_org_provider_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='integration',
-            index=models.Index(fields=['organization', 'is_active'], name='integration_org_active_idx'),
+            model_name="integration",
+            index=models.Index(
+                fields=["organization", "is_active"], name="integration_org_active_idx"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='integration',
-            constraint=models.UniqueConstraint(fields=('organization', 'provider', 'name'), name='unique_org_integration_name'),
+            model_name="integration",
+            constraint=models.UniqueConstraint(
+                fields=("organization", "provider", "name"),
+                name="unique_org_integration_name",
+            ),
         ),
     ]

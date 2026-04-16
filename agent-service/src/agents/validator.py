@@ -75,7 +75,8 @@ async def run_validator(
                 mapped_data["assignee_external_id"] = None
         except Exception as exc:
             logger.warning(
-                "[validator] Identity map lookup failed: %s — skipping assignee check.", exc
+                "[validator] Identity map lookup failed: %s — skipping assignee check.",
+                exc,
             )
 
     is_valid = len(errors) == 0

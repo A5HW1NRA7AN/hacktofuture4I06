@@ -87,7 +87,7 @@ def sync_integration_tickets(self, integration_account_id: int):
 
     except Exception as exc:
         logger.exception("Sync failed for account=%s", integration_account_id)
-        countdown = 60 * (2 ** self.request.retries)
+        countdown = 60 * (2**self.request.retries)
         raise self.retry(exc=exc, countdown=countdown)
 
 

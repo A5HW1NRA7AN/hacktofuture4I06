@@ -86,7 +86,9 @@ async def validator_node(state: TicketState) -> Dict[str, Any]:
     if not state.get("mapped_data"):
         return {
             "is_valid": False,
-            "validation_errors": ["mapped_data is empty — mapper failed to produce output"],
+            "validation_errors": [
+                "mapped_data is empty — mapper failed to produce output"
+            ],
             "attempt_count": state["attempt_count"] + 1,
         }
 

@@ -12,50 +12,121 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('accounts', '0001_initial'),
+        ("accounts", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ChatSession',
+            name="ChatSession",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('title', models.CharField(blank=True, help_text='Auto-generated from first message', max_length=500)),
-                ('context', models.JSONField(default=dict, help_text='JSONB: active filters, integration scope, date range')),
-                ('is_active', models.BooleanField(default=True)),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='chat_sessions', to='accounts.organization')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='chat_sessions', to=settings.AUTH_USER_MODEL)),
+                ("created_at", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        blank=True,
+                        help_text="Auto-generated from first message",
+                        max_length=500,
+                    ),
+                ),
+                (
+                    "context",
+                    models.JSONField(
+                        default=dict,
+                        help_text="JSONB: active filters, integration scope, date range",
+                    ),
+                ),
+                ("is_active", models.BooleanField(default=True)),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="chat_sessions",
+                        to="accounts.organization",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="chat_sessions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Chat Session',
-                'verbose_name_plural': 'Chat Sessions',
+                "verbose_name": "Chat Session",
+                "verbose_name_plural": "Chat Sessions",
             },
         ),
         migrations.CreateModel(
-            name='ChatMessage',
+            name="ChatMessage",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('role', models.CharField(choices=[('user', 'User'), ('assistant', 'Assistant'), ('system', 'System')], max_length=20)),
-                ('content', models.TextField()),
-                ('metadata', models.JSONField(default=dict, help_text='JSONB: LLM sources, tool calls, reasoning steps, citations')),
-                ('token_count', models.IntegerField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('session', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='messages', to='chat.chatsession')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "role",
+                    models.CharField(
+                        choices=[
+                            ("user", "User"),
+                            ("assistant", "Assistant"),
+                            ("system", "System"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("content", models.TextField()),
+                (
+                    "metadata",
+                    models.JSONField(
+                        default=dict,
+                        help_text="JSONB: LLM sources, tool calls, reasoning steps, citations",
+                    ),
+                ),
+                ("token_count", models.IntegerField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "session",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="messages",
+                        to="chat.chatsession",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Chat Message',
-                'verbose_name_plural': 'Chat Messages',
-                'ordering': ['created_at'],
+                "verbose_name": "Chat Message",
+                "verbose_name_plural": "Chat Messages",
+                "ordering": ["created_at"],
             },
         ),
         migrations.AddIndex(
-            model_name='chatsession',
-            index=models.Index(fields=['organization', 'user', '-created_at'], name='chat_session_org_user_idx'),
+            model_name="chatsession",
+            index=models.Index(
+                fields=["organization", "user", "-created_at"],
+                name="chat_session_org_user_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='chatmessage',
-            index=models.Index(fields=['session', 'created_at'], name='chat_message_session_time_idx'),
+            model_name="chatmessage",
+            index=models.Index(
+                fields=["session", "created_at"], name="chat_message_session_time_idx"
+            ),
         ),
     ]

@@ -153,4 +153,6 @@ class DeadLetterQueue(TimestampedModel):
         ]
 
     def __str__(self):
-        return f"DLQ[{self.raw_event_id}] retries={self.retry_count} status={self.status}"
+        return (
+            f"DLQ[{self.raw_event_id}] retries={self.retry_count} status={self.status}"
+        )

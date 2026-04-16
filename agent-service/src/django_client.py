@@ -66,7 +66,9 @@ async def _post_with_retry(
             if attempt < retries:
                 await asyncio.sleep(2 ** (attempt - 1))  # 1s, 2s, 4s
 
-    raise RuntimeError(f"Django API {url} failed after {retries} attempts") from last_exc
+    raise RuntimeError(
+        f"Django API {url} failed after {retries} attempts"
+    ) from last_exc
 
 
 async def _get_with_retry(
@@ -89,12 +91,17 @@ async def _get_with_retry(
                 return response.json()
             except (httpx.RequestError, httpx.HTTPStatusError) as exc:
                 last_exc = exc
-                if isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code < 500:
+                if (
+                    isinstance(exc, httpx.HTTPStatusError)
+                    and exc.response.status_code < 500
+                ):
                     raise
             if attempt < retries:
                 await asyncio.sleep(2 ** (attempt - 1))
 
-    raise RuntimeError(f"Django GET {url} failed after {retries} attempts") from last_exc
+    raise RuntimeError(
+        f"Django GET {url} failed after {retries} attempts"
+    ) from last_exc
 
 
 # ── Public API ─────────────────────────────────────────────────────────────────

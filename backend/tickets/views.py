@@ -139,10 +139,14 @@ class TicketActivityListView(generics.ListAPIView):
 
     def get_queryset(self):
         org = self.request.user.profile.organization
-        return TicketActivity.objects.filter(
-            ticket_id=self.kwargs["ticket_id"],
-            ticket__organization=org,
-        ).select_related("actor").order_by("-occurred_at")
+        return (
+            TicketActivity.objects.filter(
+                ticket_id=self.kwargs["ticket_id"],
+                ticket__organization=org,
+            )
+            .select_related("actor")
+            .order_by("-occurred_at")
+        )
 
 
 class TicketCommentListView(generics.ListAPIView):
@@ -152,10 +156,14 @@ class TicketCommentListView(generics.ListAPIView):
 
     def get_queryset(self):
         org = self.request.user.profile.organization
-        return TicketComment.objects.filter(
-            ticket_id=self.kwargs["ticket_id"],
-            organization=org,
-        ).select_related("author").order_by("source_created_at")
+        return (
+            TicketComment.objects.filter(
+                ticket_id=self.kwargs["ticket_id"],
+                organization=org,
+            )
+            .select_related("author")
+            .order_by("source_created_at")
+        )
 
 
 class IdentityMapView(APIView):
@@ -177,10 +185,14 @@ class IdentityMapView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        identity = ExternalIdentity.objects.filter(
-            integration_id=integration_id,
-            external_user_id=external_user_id,
-        ).select_related("user").first()
+        identity = (
+            ExternalIdentity.objects.filter(
+                integration_id=integration_id,
+                external_user_id=external_user_id,
+            )
+            .select_related("user")
+            .first()
+        )
 
         if not identity:
             return Response({"found": False, "internal_user_id": None})

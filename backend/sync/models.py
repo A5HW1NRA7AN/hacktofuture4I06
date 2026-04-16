@@ -56,7 +56,9 @@ class SyncCheckpoint(TimestampedModel):
         ]
 
     def __str__(self):
-        return f"Checkpoint[{self.checkpoint_key}] @ account={self.integration_account_id}"
+        return (
+            f"Checkpoint[{self.checkpoint_key}] @ account={self.integration_account_id}"
+        )
 
 
 class IdempotencyKey(models.Model):
@@ -87,9 +89,7 @@ class IdempotencyKey(models.Model):
         verbose_name_plural = "Idempotency Keys"
         indexes = [
             models.Index(fields=["expires_at"], name="idempkey_expires_idx"),
-            models.Index(
-                fields=["organization", "key"], name="idempkey_org_key_idx"
-            ),
+            models.Index(fields=["organization", "key"], name="idempkey_org_key_idx"),
         ]
 
     def __str__(self):

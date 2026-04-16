@@ -26,9 +26,7 @@ def role_fixture(db):
     """Create system roles."""
     from accounts.models import Role
 
-    owner, _ = Role.objects.get_or_create(
-        name="owner", defaults={"is_system": True}
-    )
+    owner, _ = Role.objects.get_or_create(name="owner", defaults={"is_system": True})
     return owner
 
 

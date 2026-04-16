@@ -11,9 +11,11 @@ class ProcessingRunListView(generics.ListAPIView):
 
     def get_queryset(self):
         org = self.request.user.profile.organization
-        return ProcessingRun.objects.filter(organization=org).prefetch_related(
-            "step_logs"
-        ).order_by("-started_at")
+        return (
+            ProcessingRun.objects.filter(organization=org)
+            .prefetch_related("step_logs")
+            .order_by("-started_at")
+        )
 
 
 class ProcessingRunDetailView(generics.RetrieveAPIView):

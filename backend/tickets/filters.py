@@ -8,14 +8,16 @@ from .models import UnifiedTicket
 class UnifiedTicketFilter(django_filters.FilterSet):
     status = django_filters.ChoiceFilter(
         field_name="normalized_status",
-        choices=UnifiedTicket.status.field.choices
-        if hasattr(UnifiedTicket, "status")
-        else [
-            ("open", "Open"),
-            ("in_progress", "In Progress"),
-            ("blocked", "Blocked"),
-            ("resolved", "Resolved"),
-        ],
+        choices=(
+            UnifiedTicket.status.field.choices
+            if hasattr(UnifiedTicket, "status")
+            else [
+                ("open", "Open"),
+                ("in_progress", "In Progress"),
+                ("blocked", "Blocked"),
+                ("resolved", "Resolved"),
+            ]
+        ),
     )
     normalized_status = django_filters.ChoiceFilter(
         choices=[
@@ -50,9 +52,7 @@ class UnifiedTicketFilter(django_filters.FilterSet):
     due_date_before = django_filters.DateFilter(
         field_name="due_date", lookup_expr="lte"
     )
-    due_date_after = django_filters.DateFilter(
-        field_name="due_date", lookup_expr="gte"
-    )
+    due_date_after = django_filters.DateFilter(field_name="due_date", lookup_expr="gte")
     title = django_filters.CharFilter(lookup_expr="icontains")
 
     class Meta:

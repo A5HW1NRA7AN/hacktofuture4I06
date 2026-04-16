@@ -8,6 +8,12 @@ app_name = "security"
 
 urlpatterns = [
     path("security/api-keys/", views.ApiKeyListView.as_view(), name="apikey-list"),
-    path("security/api-keys/<uuid:pk>/", views.ApiKeyDeleteView.as_view(), name="apikey-delete"),
-    path("security/audit-logs/", views.AuditLogListView.as_view(), name="audit-log-list"),
+    path(
+        "security/api-keys/<uuid:pk>/",
+        views.ApiKeyDeleteView.as_view(),
+        name="apikey-delete",
+    ),
+    path(
+        "security/audit-logs/", views.AuditLogListView.as_view(), name="audit-log-list"
+    ),
 ]

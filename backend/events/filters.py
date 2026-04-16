@@ -6,9 +6,7 @@ from .models import RawWebhookEvent
 
 
 class RawWebhookEventFilter(django_filters.FilterSet):
-    status = django_filters.ChoiceFilter(
-        choices=RawWebhookEvent.STATUS_CHOICES
-    )
+    status = django_filters.ChoiceFilter(choices=RawWebhookEvent.STATUS_CHOICES)
     integration = django_filters.NumberFilter(field_name="integration_id")
     event_type = django_filters.CharFilter(lookup_expr="icontains")
     received_after = django_filters.DateTimeFilter(

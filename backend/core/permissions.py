@@ -62,9 +62,11 @@ class HasApiKey(BasePermission):
         import hashlib
 
         hashed = hashlib.sha256(raw_key.encode()).hexdigest()
-        key = ApiKey.objects.filter(
-            hashed_key=hashed, is_active=True
-        ).select_related("organization").first()
+        key = (
+            ApiKey.objects.filter(hashed_key=hashed, is_active=True)
+            .select_related("organization")
+            .first()
+        )
         if not key:
             return False
         # Check expiry

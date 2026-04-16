@@ -15,7 +15,7 @@ from .models import (
     OrganizationMember,
     Permission,
     Role,
-    RolePermission,
+    # RolePermission,
     UserProfile,
 )
 
@@ -88,9 +88,7 @@ class UserRegistrationSerializer(serializers.Serializer):
             user=user, organization=org, timezone=timezone, is_onboarded=False
         )
 
-        OrganizationMember.objects.create(
-            organization=org, user=user, role=owner_role
-        )
+        OrganizationMember.objects.create(organization=org, user=user, role=owner_role)
 
         return user
 

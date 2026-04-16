@@ -102,7 +102,10 @@ async def fetch_raw_data(
             page += 1
 
             logger.debug(
-                "[fetcher] Fetched page %s from %s: %s records", page, provider, len(items)
+                "[fetcher] Fetched page %s from %s: %s records",
+                page,
+                provider,
+                len(items),
             )
 
             # Update cursor for next page

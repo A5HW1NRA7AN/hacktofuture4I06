@@ -36,9 +36,13 @@ class ApiKey(TimestampedModel):
         blank=True,
         related_name="created_api_keys",
     )
-    name = models.CharField(max_length=255, help_text="Human-readable label for this key")
+    name = models.CharField(
+        max_length=255, help_text="Human-readable label for this key"
+    )
     hashed_key = models.CharField(max_length=255, unique=True)
-    prefix = models.CharField(max_length=10, help_text="First 8 chars of raw key for display")
+    prefix = models.CharField(
+        max_length=10, help_text="First 8 chars of raw key for display"
+    )
     permissions = models.JSONField(
         default=list,
         help_text="JSONB list of allowed scopes, e.g. ['events.ingest', 'tickets.upsert']",
@@ -52,7 +56,9 @@ class ApiKey(TimestampedModel):
         verbose_name = "API Key"
         verbose_name_plural = "API Keys"
         indexes = [
-            models.Index(fields=["organization", "is_active"], name="apikey_org_active_idx"),
+            models.Index(
+                fields=["organization", "is_active"], name="apikey_org_active_idx"
+            ),
             models.Index(fields=["hashed_key"], name="apikey_hash_idx"),
             models.Index(fields=["expires_at"], name="apikey_expiry_idx"),
         ]

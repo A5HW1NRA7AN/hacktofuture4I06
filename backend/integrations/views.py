@@ -43,9 +43,7 @@ class IntegrationAccountListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         org = self.request.user.profile.organization
-        serializer.save(
-            organization=org, integration_id=self.kwargs["integration_id"]
-        )
+        serializer.save(organization=org, integration_id=self.kwargs["integration_id"])
 
 
 class IntegrationSyncView(APIView):

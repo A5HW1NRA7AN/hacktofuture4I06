@@ -13,10 +13,12 @@ User = get_user_model()
 class TestOrganization:
     def test_organization_created_with_uuid_pk(self, org_fixture):
         import uuid
+
         assert isinstance(org_fixture.id, uuid.UUID)
 
     def test_organization_slug_unique(self, org_fixture, db):
         from accounts.models import Organization
+
         with pytest.raises(IntegrityError):
             Organization.objects.create(name="Dup", slug="test-org")
 
@@ -38,6 +40,7 @@ class TestUserProfile:
 class TestOrganizationMember:
     def test_unique_member_constraint(self, user_fixture, org_fixture, role_fixture):
         from accounts.models import OrganizationMember
+
         with pytest.raises(IntegrityError):
             OrganizationMember.objects.create(
                 organization=org_fixture, user=user_fixture, role=role_fixture
@@ -54,9 +57,7 @@ class TestRBAC:
         from accounts.models import Permission, Role, RolePermission
         from accounts.models import Organization
 
-        perm = Permission.objects.create(
-            codename="tickets.view", resource="tickets"
-        )
+        perm = Permission.objects.create(codename="tickets.view", resource="tickets")
         role = Role.objects.create(name="viewer", is_system=True)
         RolePermission.objects.create(role=role, permission=perm)
 

@@ -112,9 +112,7 @@ class OrganizationMemberDetailView(generics.DestroyAPIView):
     """DELETE /api/v1/organizations/{org_id}/members/{user_id}/"""
 
     def get_queryset(self):
-        return OrganizationMember.objects.filter(
-            organization_id=self.kwargs["org_id"]
-        )
+        return OrganizationMember.objects.filter(organization_id=self.kwargs["org_id"])
 
 
 class OrganizationInviteListView(generics.ListCreateAPIView):
@@ -123,9 +121,7 @@ class OrganizationInviteListView(generics.ListCreateAPIView):
     serializer_class = OrganizationInviteSerializer
 
     def get_queryset(self):
-        return OrganizationInvite.objects.filter(
-            organization_id=self.kwargs["org_id"]
-        )
+        return OrganizationInvite.objects.filter(organization_id=self.kwargs["org_id"])
 
     def perform_create(self, serializer):
         from datetime import timedelta

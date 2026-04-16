@@ -34,9 +34,7 @@ class TestUnifiedTicket:
                 normalized_type="task",
             )
 
-    def test_update_or_create_is_idempotent(
-        self, org_fixture, integration_fixture, db
-    ):
+    def test_update_or_create_is_idempotent(self, org_fixture, integration_fixture, db):
         from tickets.models import UnifiedTicket
 
         t1, created1 = UnifiedTicket.objects.update_or_create(
@@ -73,7 +71,9 @@ class TestTicketAPI:
         resp = client.get("/api/v1/tickets/")
         assert resp.status_code == 401
 
-    def test_ticket_upsert_requires_api_key(self, client, org_fixture, integration_fixture):
+    def test_ticket_upsert_requires_api_key(
+        self, client, org_fixture, integration_fixture
+    ):
         resp = client.post(
             "/api/v1/tickets/upsert",
             {

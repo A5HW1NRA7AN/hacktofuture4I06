@@ -151,9 +151,7 @@ class UnifiedTicket(TimestampedModel):
     normalized_type = models.CharField(
         max_length=20, choices=NORMALIZED_TYPE_CHOICES, default="task"
     )
-    priority = models.CharField(
-        max_length=20, choices=PRIORITY_CHOICES, default="none"
-    )
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default="none")
     assignee = models.ForeignKey(
         ExternalIdentity,
         on_delete=models.SET_NULL,
@@ -200,9 +198,7 @@ class UnifiedTicket(TimestampedModel):
             models.Index(
                 fields=["normalized_status"],
                 name="ticket_active_status_idx",
-                condition=Q(
-                    normalized_status__in=["open", "in_progress", "blocked"]
-                ),
+                condition=Q(normalized_status__in=["open", "in_progress", "blocked"]),
             ),
             # Composite: upsert lookup key
             models.Index(

@@ -28,9 +28,17 @@ async def test_graph_valid_payload_does_not_go_to_dlq():
     }
 
     with (
-        patch("src.graph.run_mapper", new_callable=AsyncMock, return_value=valid_mapped),
-        patch("src.graph.run_validator", new_callable=AsyncMock, return_value=(True, [])),
-        patch("src.graph.upsert_ticket", new_callable=AsyncMock, return_value={"ticket_id": 1, "created": True}),
+        patch(
+            "src.graph.run_mapper", new_callable=AsyncMock, return_value=valid_mapped
+        ),
+        patch(
+            "src.graph.run_validator", new_callable=AsyncMock, return_value=(True, [])
+        ),
+        patch(
+            "src.graph.upsert_ticket",
+            new_callable=AsyncMock,
+            return_value={"ticket_id": 1, "created": True},
+        ),
         patch("src.graph.post_dlq", new_callable=AsyncMock) as mock_dlq,
     ):
         result = await run_pipeline(
@@ -68,7 +76,9 @@ async def test_graph_invalid_payload_eventually_goes_to_dlq():
     }
 
     with (
-        patch("src.graph.run_mapper", new_callable=AsyncMock, return_value=failed_mapped),
+        patch(
+            "src.graph.run_mapper", new_callable=AsyncMock, return_value=failed_mapped
+        ),
         patch(
             "src.graph.run_validator",
             new_callable=AsyncMock,

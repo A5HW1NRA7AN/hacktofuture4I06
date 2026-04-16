@@ -62,9 +62,7 @@ class EventIngestView(APIView):
             existing = RawWebhookEvent.objects.get(
                 idempotency_key=data["idempotency_key"]
             )
-            logger.info(
-                "Duplicate ingest rejected, key=%s", data["idempotency_key"]
-            )
+            logger.info("Duplicate ingest rejected, key=%s", data["idempotency_key"])
             return Response(
                 {
                     "event_id": existing.id,
@@ -75,9 +73,7 @@ class EventIngestView(APIView):
             )
 
         # Fire async Celery task on ingestion queue
-        process_raw_webhook.apply_async(
-            args=[event.id], queue="ingestion", countdown=0
-        )
+        process_raw_webhook.apply_async(args=[event.id], queue="ingestion", countdown=0)
 
         logger.info(
             "Event ingested: id=%s type=%s integration=%s",

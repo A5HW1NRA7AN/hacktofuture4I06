@@ -76,7 +76,9 @@ def process_raw_webhook(self, event_id: int):
 
     except httpx.HTTPStatusError as exc:
         logger.warning(
-            "Agent service HTTP error for event %s: %s", event_id, exc.response.status_code
+            "Agent service HTTP error for event %s: %s",
+            event_id,
+            exc.response.status_code,
         )
         _handle_task_failure(self, event_id, exc)
 
@@ -93,7 +95,7 @@ def _handle_task_failure(task, event_id: int, exc: Exception):
     max_retries = task.max_retries
 
     if retry_number < max_retries:
-        countdown = 60 * (2 ** retry_number)  # 60, 120, 240, 480, 960
+        countdown = 60 * (2**retry_number)  # 60, 120, 240, 480, 960
         logger.info(
             "Retrying event %s (attempt %s/%s) in %ss",
             event_id,

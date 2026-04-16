@@ -10,53 +10,82 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('processing', '0001_initial'),
-        ('accounts', '0001_initial'),
-        ('events', '0001_initial'),
+        ("processing", "0001_initial"),
+        ("accounts", "0001_initial"),
+        ("events", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='rawwebhookevent',
-            name='processing_run',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='source_events', to='processing.processingrun'),
+            model_name="rawwebhookevent",
+            name="processing_run",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="source_events",
+                to="processing.processingrun",
+            ),
         ),
         migrations.AddField(
-            model_name='deadletterqueue',
-            name='organization',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='dead_letter_queue', to='accounts.organization'),
+            model_name="deadletterqueue",
+            name="organization",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="dead_letter_queue",
+                to="accounts.organization",
+            ),
         ),
         migrations.AddField(
-            model_name='deadletterqueue',
-            name='raw_event',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='dead_letter', to='events.rawwebhookevent'),
+            model_name="deadletterqueue",
+            name="raw_event",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="dead_letter",
+                to="events.rawwebhookevent",
+            ),
         ),
         migrations.AddIndex(
-            model_name='rawwebhookevent',
-            index=django.contrib.postgres.indexes.GinIndex(fields=['payload'], name='raw_event_payload_gin_idx'),
+            model_name="rawwebhookevent",
+            index=django.contrib.postgres.indexes.GinIndex(
+                fields=["payload"], name="raw_event_payload_gin_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='rawwebhookevent',
-            index=models.Index(condition=models.Q(('status__in', ['pending', 'failed'])), fields=['status'], name='raw_event_pending_failed_idx'),
+            model_name="rawwebhookevent",
+            index=models.Index(
+                condition=models.Q(("status__in", ["pending", "failed"])),
+                fields=["status"],
+                name="raw_event_pending_failed_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='rawwebhookevent',
-            index=models.Index(fields=['-received_at'], name='raw_event_received_at_idx'),
+            model_name="rawwebhookevent",
+            index=models.Index(
+                fields=["-received_at"], name="raw_event_received_at_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='rawwebhookevent',
-            index=models.Index(fields=['organization', 'status'], name='raw_event_org_status_idx'),
+            model_name="rawwebhookevent",
+            index=models.Index(
+                fields=["organization", "status"], name="raw_event_org_status_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='rawwebhookevent',
-            index=models.Index(fields=['integration', '-received_at'], name='raw_event_integration_time_idx'),
+            model_name="rawwebhookevent",
+            index=models.Index(
+                fields=["integration", "-received_at"],
+                name="raw_event_integration_time_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='deadletterqueue',
-            index=models.Index(fields=['organization', 'status'], name='dlq_org_status_idx'),
+            model_name="deadletterqueue",
+            index=models.Index(
+                fields=["organization", "status"], name="dlq_org_status_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='deadletterqueue',
-            index=models.Index(fields=['last_retry_at'], name='dlq_retry_at_idx'),
+            model_name="deadletterqueue",
+            index=models.Index(fields=["last_retry_at"], name="dlq_retry_at_idx"),
         ),
     ]

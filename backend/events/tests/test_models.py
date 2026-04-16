@@ -16,9 +16,7 @@ class TestRawWebhookEventModel:
         from events.models import RawWebhookEvent
 
         payload = {"issue": {"id": "PROJ-1", "summary": "Test Bug"}}
-        key = hashlib.sha256(
-            json.dumps(payload, sort_keys=True).encode()
-        ).hexdigest()
+        key = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 
         event = RawWebhookEvent.objects.create(
             organization=org_fixture,
@@ -55,7 +53,9 @@ class TestRawWebhookEventModel:
 
 @pytest.mark.django_db
 class TestIngestEndpoint:
-    def test_ingest_without_api_key_returns_403(self, client, org_fixture, integration_fixture):
+    def test_ingest_without_api_key_returns_403(
+        self, client, org_fixture, integration_fixture
+    ):
         resp = client.post(
             "/api/v1/events/ingest",
             {

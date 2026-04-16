@@ -9,7 +9,11 @@ app_name = "insights"
 urlpatterns = [
     path("insights/", views.InsightListView.as_view(), name="insight-list"),
     path("dashboards/", views.DashboardListView.as_view(), name="dashboard-list"),
-    path("dashboards/<int:pk>/", views.DashboardDetailView.as_view(), name="dashboard-detail"),
+    path(
+        "dashboards/<int:pk>/",
+        views.DashboardDetailView.as_view(),
+        name="dashboard-detail",
+    ),
     path(
         "dashboards/<int:dashboard_id>/widgets/",
         views.DashboardWidgetListView.as_view(),
