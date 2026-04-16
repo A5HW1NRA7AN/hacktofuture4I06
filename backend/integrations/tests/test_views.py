@@ -29,7 +29,9 @@ class TestIntegrationListView:
         assert data["provider"] == "github"
         assert data["is_active"] is True
 
-    def test_list_returns_org_integrations_only(self, auth_client, integration_fixture, db):
+    def test_list_returns_org_integrations_only(
+        self, auth_client, integration_fixture, db
+    ):
         from accounts.models import Organization
         from integrations.models import Integration
         from django.contrib.auth import get_user_model
@@ -38,7 +40,9 @@ class TestIntegrationListView:
             name="Other Integration Org", slug="other-int-org", plan_tier="free"
         )
         other_user = get_user_model().objects.create_user(
-            username="intother@example.com", email="intother@example.com", password="pass"
+            username="intother@example.com",
+            email="intother@example.com",
+            password="pass",
         )
         Integration.objects.create(
             organization=other_org,
@@ -71,7 +75,12 @@ class TestIntegrationDetailView:
     def test_update_integration_config(self, auth_client, integration_fixture):
         resp = auth_client.patch(
             f"/api/v1/integrations/{integration_fixture.id}/",
-            {"config": {"base_url": "https://updated.atlassian.net", "project": "PROJ"}},
+            {
+                "config": {
+                    "base_url": "https://updated.atlassian.net",
+                    "project": "PROJ",
+                }
+            },
             format="json",
         )
         assert resp.status_code in (200, 204)

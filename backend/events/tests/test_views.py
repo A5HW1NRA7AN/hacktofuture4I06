@@ -22,7 +22,9 @@ class TestEventIngestView:
         )
         assert resp.status_code in (401, 403)
 
-    def test_ingest_creates_event(self, api_key_fixture, integration_fixture, org_fixture):
+    def test_ingest_creates_event(
+        self, api_key_fixture, integration_fixture, org_fixture
+    ):
         """Valid ApiKey + payload → 202 + event persisted."""
         from rest_framework.test import APIClient
         from events.models import RawWebhookEvent
@@ -48,7 +50,9 @@ class TestEventIngestView:
             event_type="jira.issue.created",
         ).exists()
 
-    def test_ingest_is_idempotent(self, api_key_fixture, integration_fixture, org_fixture):
+    def test_ingest_is_idempotent(
+        self, api_key_fixture, integration_fixture, org_fixture
+    ):
         """Same idempotency_key twice → 202 both times, only 1 event created."""
         from rest_framework.test import APIClient
         from events.models import RawWebhookEvent
@@ -71,7 +75,11 @@ class TestEventIngestView:
             resp2 = client.post("/api/v1/events/ingest", payload, format="json")
 
         assert resp1.status_code in (status.HTTP_201_CREATED, status.HTTP_202_ACCEPTED)
-        assert resp2.status_code in (status.HTTP_200_OK, status.HTTP_201_CREATED, status.HTTP_202_ACCEPTED)
+        assert resp2.status_code in (
+            status.HTTP_200_OK,
+            status.HTTP_201_CREATED,
+            status.HTTP_202_ACCEPTED,
+        )
         # Exactly 1 event for this payload hash
         count = RawWebhookEvent.objects.filter(
             organization=org_fixture,
@@ -79,7 +87,9 @@ class TestEventIngestView:
         ).count()
         assert count == 1
 
-    def test_ingest_missing_event_type_returns_400(self, api_key_fixture, org_fixture, integration_fixture):
+    def test_ingest_missing_event_type_returns_400(
+        self, api_key_fixture, org_fixture, integration_fixture
+    ):
         from rest_framework.test import APIClient
         from unittest.mock import patch
 
@@ -105,7 +115,9 @@ class TestRawWebhookEventListView:
         resp = client.get("/api/v1/events/")
         assert resp.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_list_returns_org_scoped_events(self, auth_client, org_fixture, integration_fixture):
+    def test_list_returns_org_scoped_events(
+        self, auth_client, org_fixture, integration_fixture
+    ):
         from events.models import RawWebhookEvent
 
         RawWebhookEvent.objects.create(
@@ -120,7 +132,9 @@ class TestRawWebhookEventListView:
         results = resp.json().get("results", resp.json())
         assert any(e["event_type"] == "jira.issue.created" for e in results)
 
-    def test_list_filters_by_status(self, auth_client, org_fixture, integration_fixture):
+    def test_list_filters_by_status(
+        self, auth_client, org_fixture, integration_fixture
+    ):
         from events.models import RawWebhookEvent
 
         RawWebhookEvent.objects.create(
@@ -144,12 +158,18 @@ class TestRawWebhookEventListView:
         from events.models import RawWebhookEvent
         from django.contrib.auth import get_user_model
 
-        other_org = Organization.objects.create(name="Other", slug="other", plan_tier="free")
+        other_org = Organization.objects.create(
+            name="Other", slug="other", plan_tier="free"
+        )
         other_user = get_user_model().objects.create_user(
             username="other2@example.com", email="other2@example.com", password="pass"
         )
         other_int = Integration.objects.create(
-            organization=other_org, created_by=other_user, provider="slack", name="Slack", config={}
+            organization=other_org,
+            created_by=other_user,
+            provider="slack",
+            name="Slack",
+            config={},
         )
         RawWebhookEvent.objects.create(
             organization=other_org,

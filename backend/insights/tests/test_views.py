@@ -14,12 +14,14 @@ class TestInsightListView:
         resp = client.get("/api/v1/insights/")
         assert resp.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_list_returns_org_scoped_insights(self, auth_client, org_fixture, user_fixture):
+    def test_list_returns_org_scoped_insights(
+        self, auth_client, org_fixture, user_fixture
+    ):
         from insights.models import Insight
 
         Insight.objects.create(
             organization=org_fixture,
-            generated_by="gpt-4o",        # CharField — model name, not FK
+            generated_by="gpt-4o",  # CharField — model name, not FK
             title="Sprint velocity dropped 30%",
             content={"body": "Based on the last 3 sprints..."},  # JSONField
             insight_type="trend",
@@ -32,12 +34,15 @@ class TestInsightListView:
     def test_other_org_insights_not_visible(self, auth_client, db):
         from accounts.models import Organization
         from insights.models import Insight
-        from django.contrib.auth import get_user_model
 
-        other_org = Organization.objects.create(name="OtherCo", slug="other-co", plan_tier="free")
-        other_user = get_user_model().objects.create_user(
-            username="other3@example.com", email="other3@example.com", password="pass"
+        # from django.contrib.auth import get_user_model
+
+        other_org = Organization.objects.create(
+            name="OtherCo", slug="other-co", plan_tier="free"
         )
+        # other_user = get_user_model().objects.create_user(
+        #     username="other3@example.com", email="other3@example.com", password="pass"
+        # )
         Insight.objects.create(
             organization=other_org,
             generated_by="gpt-4o",
@@ -62,7 +67,11 @@ class TestDashboardViews:
     def test_create_dashboard(self, auth_client, org_fixture):
         resp = auth_client.post(
             "/api/v1/dashboards/",
-            {"name": "Sprint Overview", "slug": "sprint-overview", "layout": {"cols": 3}},
+            {
+                "name": "Sprint Overview",
+                "slug": "sprint-overview",
+                "layout": {"cols": 3},
+            },
             format="json",
         )
         assert resp.status_code == status.HTTP_201_CREATED
@@ -81,7 +90,9 @@ class TestDashboardViews:
         results = resp.json().get("results", resp.json())
         assert any(d["name"] == "My Board" for d in results)
 
-    def test_dashboard_detail_returns_correct_object(self, auth_client, org_fixture, user_fixture):
+    def test_dashboard_detail_returns_correct_object(
+        self, auth_client, org_fixture, user_fixture
+    ):
         from insights.models import Dashboard
 
         dash = Dashboard.objects.create(
@@ -98,7 +109,9 @@ class TestDashboardViews:
         from insights.models import Dashboard
         from django.contrib.auth import get_user_model
 
-        other_org = Organization.objects.create(name="OtherDash", slug="other-dash", plan_tier="free")
+        other_org = Organization.objects.create(
+            name="OtherDash", slug="other-dash", plan_tier="free"
+        )
         other_user = get_user_model().objects.create_user(
             username="other4@example.com", email="other4@example.com", password="pass"
         )
@@ -149,7 +162,9 @@ class TestDashboardWidgetViews:
         from insights.models import Dashboard
 
         dash = Dashboard.objects.create(
-            organization=org_fixture, created_by=user_fixture, name="Create Widget Board"
+            organization=org_fixture,
+            created_by=user_fixture,
+            name="Create Widget Board",
         )
         resp = auth_client.post(
             f"/api/v1/dashboards/{dash.id}/widgets/",
@@ -186,7 +201,9 @@ class TestSavedQueryViews:
         assert resp.status_code == status.HTTP_201_CREATED, resp.json()
         assert resp.json()["name"] == "Open bugs this sprint"
 
-    def test_list_saved_queries_org_scoped(self, auth_client, org_fixture, user_fixture):
+    def test_list_saved_queries_org_scoped(
+        self, auth_client, org_fixture, user_fixture
+    ):
         from insights.models import SavedQuery
 
         SavedQuery.objects.create(

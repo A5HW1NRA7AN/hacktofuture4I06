@@ -43,6 +43,7 @@ setup:
 
 # Install uv and dependencies
 install:
+	pip install uv
 	@echo "Checking for uv..."
 	@if ! command -v uv > /dev/null && [ ! -f "$(UV)" ]; then \
 		echo "uv not found. Install via: curl -LsSf https://astral.sh/uv/install.sh | sh"; \
@@ -139,6 +140,8 @@ test:
 	@echo "Running agent service tests (pytest)..."
 	cd agent-service && $(AGENT_PYTEST) --tb=short -q
 	@echo "Tests complete!"
+	@echo "Running tests with coverage..."
+	cd backend && $(BACKEND_PYTEST) --tb=short --cov=. --cov-report=term-missing -q
 
 test-backend:
 	@echo "Running backend tests only..."

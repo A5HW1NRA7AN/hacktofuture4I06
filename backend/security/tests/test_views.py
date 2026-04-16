@@ -2,6 +2,9 @@
 Security API view tests — ApiKey CRUD and AuditLog listing.
 """
 
+import hashlib
+import secrets
+
 import pytest
 from rest_framework import status
 
@@ -44,7 +47,6 @@ class TestApiKeyListView:
         """Keys from other orgs must not appear."""
         from accounts.models import Organization
         from security.models import ApiKey
-        import hashlib, secrets
 
         # Create key in own org
         auth_client.post(
@@ -53,7 +55,9 @@ class TestApiKeyListView:
             format="json",
         )
         # Manually insert key for different org
-        other_org = Organization.objects.create(name="OtherSec", slug="other-sec", plan_tier="free")
+        other_org = Organization.objects.create(
+            name="OtherSec", slug="other-sec", plan_tier="free"
+        )
         raw = secrets.token_urlsafe(32)
         ApiKey.objects.create(
             organization=other_org,
@@ -86,7 +90,6 @@ class TestApiKeyDeleteView:
 
     def test_delete_api_key(self, auth_client, org_fixture):
         from security.models import ApiKey
-        import hashlib, secrets
 
         raw = secrets.token_urlsafe(32)
         key = ApiKey.objects.create(
@@ -104,9 +107,10 @@ class TestApiKeyDeleteView:
         """User cannot delete a key belonging to another org."""
         from accounts.models import Organization
         from security.models import ApiKey
-        import hashlib, secrets
 
-        other_org = Organization.objects.create(name="OtherDel", slug="other-del", plan_tier="free")
+        other_org = Organization.objects.create(
+            name="OtherDel", slug="other-del", plan_tier="free"
+        )
         raw = secrets.token_urlsafe(32)
         key = ApiKey.objects.create(
             organization=other_org,
