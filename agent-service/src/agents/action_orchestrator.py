@@ -8,6 +8,7 @@ Supports two execution modes (controlled by MCP_LIVE env var):
 """
 
 import logging
+import os
 from typing import Any, Dict, List
 
 from langchain_core.prompts import ChatPromptTemplate
