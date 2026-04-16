@@ -31,3 +31,8 @@ members = [
 line-length = 88
 target-version = ['py311']
 include = '\.pyi?$'
+
+[dependency-groups]
+dev = [
+    "isort>=8.0.1",
+]

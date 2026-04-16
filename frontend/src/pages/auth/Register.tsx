@@ -44,15 +44,16 @@ export default function Register() {
       
       setAuth(user, token);
       navigate('/');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Registration failed', err);
-      const data = err.response?.data;
+      const error = err as { response?: { data?: Record<string, string[] | string> } };
+      const data = error.response?.data;
       // Build a readable error from DRF validation errors
       if (data && typeof data === 'object') {
         const messages: string[] = [];
         for (const [field, errors] of Object.entries(data)) {
           if (Array.isArray(errors)) {
-            messages.push(`${field}: ${(errors as string[]).join(', ')}`);
+            messages.push(`${field}: ${errors.join(', ')}`);
           } else if (typeof errors === 'string') {
             messages.push(errors);
           }

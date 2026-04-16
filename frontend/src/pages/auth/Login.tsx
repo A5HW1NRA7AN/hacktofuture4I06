@@ -58,9 +58,10 @@ export default function Login() {
 
       setAuth(user, token);
       navigate('/');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Login failed', err);
-      const data = err.response?.data;
+      const error = err as { response?: { data?: { detail?: string; username?: string[]; non_field_errors?: string[] } } };
+      const data = error.response?.data;
       const msg =
         data?.detail ||
         data?.non_field_errors?.[0] ||

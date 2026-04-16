@@ -131,7 +131,7 @@ export default function ChatView() {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
-    } catch (err) {
+    } catch {
       setFeed((prev) => [
         ...prev,
         {

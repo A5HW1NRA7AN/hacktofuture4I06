@@ -3183,6 +3183,11 @@ dev = [
     { name = "pytest-httpx" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "isort" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "black", specifier = ">=24.1.1" },
@@ -3197,6 +3202,9 @@ requires-dist = [
     { name = "pytest-httpx", marker = "extra == 'dev'", specifier = ">=0.30.0" },
 ]
 provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "isort", specifier = ">=8.0.1" }]
 
 [[package]]
 name = "watchfiles"
