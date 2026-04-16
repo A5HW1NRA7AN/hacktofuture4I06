@@ -44,15 +44,13 @@ setup:
 # Install uv and dependencies
 install:
 	@echo "Checking for uv..."
-	@if ! command -v uv > /dev/null; then \
-		echo "uv not found, attempting to install via pip..."; \
-		python3 -m pip install uv || echo "Global pip install restricted. Please install uv manually (e.g., curl -LsSf https://astral.sh/uv/install.sh | sh)"; \
-	else \
-		echo "uv is already installed."; \
+	@if ! command -v uv > /dev/null && [ ! -f "$(UV)" ]; then \
+		echo "uv not found. Install via: curl -LsSf https://astral.sh/uv/install.sh | sh"; \
+		exit 1; \
 	fi
-	@echo "Installing dependencies from requirements.txt..."
-	$(UV) pip install -r requirements.txt
-	@echo "Installation complete!"
+	@echo "Installing dependencies via uv sync..."
+	uv sync --all-extras
+	@echo "Installation complete! Activate with: source .venv/bin/activate"
 
 # Backend commands
 backend:
