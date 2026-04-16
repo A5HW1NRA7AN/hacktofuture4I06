@@ -6,6 +6,8 @@ on:
     paths:
       - "backend/**"
       - "agent-service/**"
+      - "requirements.txt"
+      - "uv.lock"
       - ".github/workflows/backend-ci.yml"
   pull_request:
     branches: [main]
@@ -17,7 +19,7 @@ env:
   PYTHON_VERSION: "3.11"
 
 jobs:
-  # ── Lint ────────────────────────────────────────────────────────────────────
+  # ── Lint ─────────────────────────────────────────────────────────────────────
   lint:
     name: Lint & Format Check
     runs-on: ubuntu-latest
@@ -30,24 +32,26 @@ jobs:
           enable-cache: true
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install root dependencies
-        run: uv pip install -r requirements.txt --system
+      # uv sync reads uv.lock → installs into project-local .venv
+      # No --system flag needed; uv run transparently activates .venv
+      - name: Install dependencies
+        run: uv sync
 
       - name: Black — backend
-        run: cd backend && python -m black --check .
+        run: cd backend && uv run black --check .
 
       - name: Flake8 — backend
-        run: cd backend && python -m flake8 .
+        run: cd backend && uv run flake8 .
 
       - name: Black — agent-service
-        run: cd agent-service && python -m black --check .
+        run: cd agent-service && uv run black --check .
 
       - name: Flake8 — agent-service
-        run: cd agent-service && python -m flake8 .
+        run: cd agent-service && uv run flake8 .
 
-  # ── Backend Tests ────────────────────────────────────────────────────────────
+  # ── Backend Tests ─────────────────────────────────────────────────────────────
   test-backend:
-    name: Backend Tests (pytest + Postgres)
+    name: Backend Tests (pytest + Postgres 14)
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -97,18 +101,16 @@ jobs:
           enable-cache: true
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install root dependencies
-        run: uv pip install -r requirements.txt --system
+      - name: Install dependencies
+        run: uv sync
 
       - name: Run migrations
-        run: |
-          cd backend
-          python manage.py migrate --no-input
+        run: cd backend && uv run python manage.py migrate --no-input
 
       - name: Run pytest (backend)
         run: |
           cd backend
-          python -m pytest --tb=short -q \
+          uv run pytest --tb=short -q \
             --cov=. \
             --cov-report=xml:coverage.xml \
             --cov-report=term-missing
@@ -120,7 +122,7 @@ jobs:
           name: backend-coverage
           path: backend/coverage.xml
 
-  # ── Agent Tests ──────────────────────────────────────────────────────────────
+  # ── Agent Tests ───────────────────────────────────────────────────────────────
   test-agent:
     name: Agent Service Tests (pytest-asyncio)
     runs-on: ubuntu-latest
@@ -138,10 +140,8 @@ jobs:
           enable-cache: true
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install root dependencies
-        run: uv pip install -r requirements.txt --system
+      - name: Install dependencies
+        run: uv sync
 
       - name: Run pytest (agent-service)
-        run: |
-          cd agent-service
-          python -m pytest --tb=short -q
+        run: cd agent-service && uv run pytest --tb=short -q

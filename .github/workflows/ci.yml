@@ -2,26 +2,30 @@ name: CI Baseline
 
 on:
   push:
-    branches: [ main, "dev-*" ]
+    branches: [main, "dev-*"]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  lint: # Updated ID to match protection.json
+  lint: # ID must match protection.json
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-          python-version: '3.11'
-      - name: Install dependencies
-        run: make install
-      - name: Run Lint & Format Check
-        run: make fl
+          python-version: "3.11"
 
-  test: # Updated ID to match protection.json
+      - name: Install dependencies
+        # uv sync reads uv.lock and installs into .venv — no --system needed
+        run: uv sync
+
+      - name: Run Lint & Format Check
+        run: uv run make fl
+
+  test: # ID must match protection.json
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -41,18 +45,41 @@ jobs:
         image: redis:7-alpine
         ports:
           - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      SECRET_KEY: "ci-test-key-not-for-production"
+      DEBUG: "True"
+      POSTGRES_DB: voice_to_action
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: "5432"
+      REDIS_URL: "redis://localhost:6379/0"
+      CELERY_BROKER_URL: "redis://localhost:6379/0"
+      CELERY_RESULT_BACKEND: "redis://localhost:6379/1"
+      AGENT_SERVICE_URL: "http://localhost:8001"
+      AGENT_SERVICE_API_KEY: "ci-test-api-key"
+      OPENAI_API_KEY: "sk-ci-placeholder"
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-          python-version: '3.11'
+          python-version: "3.11"
+
       - name: Install dependencies
-        run: make install
+        run: uv sync
+
+      - name: Run migrations
+        run: cd backend && uv run python manage.py migrate --no-input
+
       - name: Run Tests
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/voice_to_action
-          REDIS_URL: redis://localhost:6379/0
-          SECRET_KEY: ci-test-key
         run: make test
