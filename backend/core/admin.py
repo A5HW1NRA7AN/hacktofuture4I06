@@ -67,7 +67,6 @@ from chat.models import ChatMessage, ChatSession
 # ── security ──────────────────────────────────────────────────────────────────
 from security.models import ApiKey, AuditLog
 
-
 # ============================================================================
 # accounts
 # ============================================================================
@@ -268,7 +267,13 @@ class UnifiedTicketAdmin(admin.ModelAdmin):
 
 @admin.register(ExternalIdentity)
 class ExternalIdentityAdmin(admin.ModelAdmin):
-    list_display = ("display_name", "email", "external_user_id", "integration", "organization")
+    list_display = (
+        "display_name",
+        "email",
+        "external_user_id",
+        "integration",
+        "organization",
+    )
     search_fields = ("email", "display_name", "external_user_id")
     raw_id_fields = ("organization", "integration", "user")
 
@@ -343,7 +348,14 @@ class DashboardWidgetInline(admin.TabularInline):
 
 @admin.register(Dashboard)
 class DashboardAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "organization", "is_default", "is_shared", "created_by")
+    list_display = (
+        "name",
+        "slug",
+        "organization",
+        "is_default",
+        "is_shared",
+        "created_by",
+    )
     list_filter = ("is_default", "is_shared")
     search_fields = ("name", "slug")
     raw_id_fields = ("organization", "created_by")
