@@ -39,9 +39,9 @@ class ActionPlannerSchema(BaseModel):
 
 SYSTEM_PROMPT = """You are the core of an Autonomous Proactive Product Manager.
 
-The user will provide natural language text (e.g. standup updates, bug reports, status changes).
-Your job is to parse this text, determine what actions need to occur
-across platforms, and output a structured plan.
+The user will provide natural language text (e.g. checking in standup updates, reporting a bug).
+Your job is to parse this text, determine what actions need to occur across various platforms,
+and output a structured plan.
 
 AVAILABLE TOOLS:
 - jira: [create_ticket, transition_status, update_ticket]
@@ -64,13 +64,15 @@ async def _execute_mock(tool: str, action: str, payload: dict) -> str:
     """Mock MCP execution — safe for live demos."""
     logger.info("[MCP MOCK] Executing %s -> %s with payload %s", tool, action, payload)
     if tool == "jira" and action == "create_ticket":
-        summary = payload.get("summary", "Untitled")
-        project = payload.get("project_key", "PROJ")
-        return f"Created Jira ticket '{summary}' in {project}"
+        return (
+            f"Created Jira ticket '{payload.get('summary', 'Untitled')}' "
+            f"in {payload.get('project_key', 'PROJ')}"
+        )
     elif tool == "jira" and action == "transition_status":
-        issue = payload.get("issue_key", "???")
-        transition = payload.get("transition_name", "???")
-        return f"Transitioned {issue} to '{transition}'"
+        return (
+            f"Transitioned {payload.get('issue_key', '???')} to "
+            f"'{payload.get('transition_name', '???')}'"
+        )
     elif tool == "slack" and action == "send_message":
         return f"Sent message to Slack channel {payload.get('channel', '#general')}"
     else:
