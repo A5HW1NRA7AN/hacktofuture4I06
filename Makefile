@@ -1,4 +1,4 @@
-.PHONY: help setup install backend agent jira hubspot frontend docker-up docker-down lint format fl test clean
+.PHONY: help setup install backend agent jira hubspot frontend frontend-test frontend-lint docker-up docker-down lint format fl test clean
 
 # Default target
 help:
@@ -84,7 +84,7 @@ docker-logs:
 	docker compose logs -f
 
 # Linting & Formatting
-fl: format lint
+fl: format lint frontend-lint frontend-test
 
 lint:
 	@echo "Running Black linter..."
@@ -109,10 +109,24 @@ format:
 
 # Testing
 test:
-	@echo "Running tests..."
+	@echo "Running backend tests..."
 	cd backend && uv run python manage.py test
 	cd agent-service && uv run python -m unittest discover -s tests
-	@echo "Tests complete!"
+	@echo "Running frontend tests..."
+	cd frontend && npm run test:ci
+	@echo "All tests complete!"
+
+# Frontend testing & linting
+frontend-test:
+	@echo "Running frontend tests..."
+	cd frontend && npm run test:ci
+	@echo "Frontend tests complete!"
+
+frontend-lint:
+	@echo "Running frontend lint & type-check..."
+	cd frontend && npm run lint
+	cd frontend && npx tsc --noEmit -p tsconfig.app.json
+	@echo "Frontend lint complete!"
 
 # Clean
 clean:
@@ -124,3 +138,7 @@ clean:
 	rm -rf backend/.pytest_cache agent-service/.pytest_cache
 	rm -rf mcp-servers/jira/.pytest_cache mcp-servers/hubspot/.pytest_cache
 	@echo "Clean complete!"
+
+env:
+	python -m venv .venv
+	
