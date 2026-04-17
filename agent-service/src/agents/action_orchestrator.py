@@ -145,7 +145,7 @@ async def _execute_live(tool: str, action: str, payload: dict) -> str:
     except Exception as exc:
         logger.error("[MCP LIVE] Failed %s.%s: %s", tool, action, exc)
         # Graceful fallback to mock on failure
-        return f"[FALLBACK] {await _execute_mock(tool, action, payload)}"
+        return f"[FALLBACK] {await _execute_mock(tool, action, payload)} (Error: {str(exc)})"
 
 
 async def run_action_orchestrator(text: str) -> ActionResult:
