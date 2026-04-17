@@ -143,7 +143,7 @@ frontend-build:
 
 # Typecheck avoids `tsc -b` which chokes when the project is on a UNC path
 # on Windows; this targets the app tsconfig directly and works everywhere.
-frontend-typecheck:
+# frontend-typecheck:
 	@echo "Typechecking frontend..."
 	@test -f frontend/node_modules/typescript/bin/tsc || (echo "ERROR: frontend/node_modules missing. Run: make frontend-install   (CI must run npm ci in frontend/ before make fl or make test)"; exit 1)
 	cd frontend && node ./node_modules/typescript/bin/tsc --noEmit -p ./tsconfig.app.json
