@@ -50,7 +50,7 @@ AVAILABLE TOOLS:
 - jira: [create_ticket, transition_status, update_ticket, search_issues]
   - create_ticket payload: {{project_key, summary, issue_type, description, priority, labels}}
   - transition_status payload: {{issue_key, transition_name}}
-  - search_issues payload: {{jql}}
+  - search_issues payload: {{jql}} (Example valid JQL: project = SCRUM AND status IN ("To Do", "In Progress"))
 - slack: [send_message]
   - send_message payload: {{channel, text}}
 - linear: [create_issue, update_issue]
@@ -59,9 +59,9 @@ AVAILABLE TOOLS:
 RULES:
 1. Be precise — only emit actions the user explicitly or implicitly requested.
 2. For Jira transitions, use standard status names: To Do, In Progress, Done.
-3. For Jira searches, output valid JQL based on the user's intent.
-3. For Slack messages, compose a helpful, professional message.
-4. Include ALL relevant details from the user's input in the payloads.
+3. For Jira searches, output valid JQL based on the user's intent. ALWAYS use 'SCRUM' as the default Jira project key in JQL (e.g. project = SCRUM) unless another project is specified. CRITICAL: Any status names with spaces MUST be wrapped in double quotes in JQL (e.g., status IN ("To Do", "In Progress")).
+4. For Slack messages, compose a helpful, professional message.
+5. Include ALL relevant details from the user's input in the payloads.
 """
 
 
@@ -71,7 +71,7 @@ async def _execute_mock(tool: str, action: str, payload: dict) -> str:
     if tool == "jira" and action == "create_ticket":
         return (
             f"Created Jira ticket '{payload.get('summary', 'Untitled')}' "
-            f"in {payload.get('project_key', 'PROJ')}"
+            f"in {payload.get('project_key', 'SCRUM')}"
         )
     elif tool == "jira" and action == "transition_status":
         return (
@@ -106,7 +106,7 @@ async def _execute_live(tool: str, action: str, payload: dict) -> str:
             jira_mod = _load_mcp_server("jira")
             if action == "create_ticket":
                 result = await jira_mod.create_issue(
-                    project_key=payload.get("project_key", "PROJ"),
+                    project_key=payload.get("project_key", "SCRUM"),
                     summary=payload.get("summary", "Untitled"),
                     issue_type=payload.get("issue_type", "Task"),
                     description=payload.get("description", ""),
@@ -124,7 +124,7 @@ async def _execute_live(tool: str, action: str, payload: dict) -> str:
 
             elif action == "search_issues":
                 result = await jira_mod.search_issues(
-                    jql=payload.get("jql", "project = PROJ ORDER BY created DESC"),
+                    jql=payload.get("jql", "project = SCRUM ORDER BY created DESC"),
                 )
                 if isinstance(result, list):
                     count = len(result)
