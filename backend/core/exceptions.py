@@ -63,7 +63,7 @@ def custom_exception_handler(exc, context):
 
     # Normalise the response body into our envelope
     error_detail = response.data
-    
+
     if isinstance(error_detail, dict) and "detail" not in error_detail:
         # Standard validation error dictionary (e.g., {"password": ["..."]}).
         # Return it directly so the exact fields can be cleanly extracted.

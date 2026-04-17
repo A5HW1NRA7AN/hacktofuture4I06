@@ -75,18 +75,18 @@ async def search_issues(
         {issues, total, maxResults, startAt}
     """
     limit = max(1, min(limit, 100))
-    payload = {
+    params = {
         "jql": jql,
         "maxResults": limit,
         "startAt": start_at,
-        "fields": fields.split(","),
+        "fields": fields,
     }
 
     async with httpx.AsyncClient(timeout=30) as client:
-        resp = await client.post(
-            f"{_JIRA_BASE_URL}/rest/api/3/search",
+        resp = await client.get(
+            f"{_JIRA_BASE_URL}/rest/api/3/search/jql",
             headers=_headers(),
-            json=payload,
+            params=params,
         )
         resp.raise_for_status()
         data = resp.json()

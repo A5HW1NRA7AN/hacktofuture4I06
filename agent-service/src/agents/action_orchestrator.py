@@ -86,12 +86,18 @@ async def _execute_mock(tool: str, action: str, payload: dict) -> str:
 
 import importlib.util
 
+
 def _load_mcp_server(provider: str):
-    path = os.path.abspath(os.path.join(os.path.dirname(__file__), f"../../../mcp-servers/{provider}/src/server.py"))
+    path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__), f"../../../mcp-servers/{provider}/src/server.py"
+        )
+    )
     spec = importlib.util.spec_from_file_location(f"mcp_{provider}", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
 
 async def _execute_live(tool: str, action: str, payload: dict) -> str:
     """Live MCP execution — calls real Jira/Slack APIs."""
